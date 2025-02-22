@@ -8,10 +8,10 @@ RUN pip install poetry
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry install --no-root
+RUN poetry install --no-root --with production
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "python", "main.py"]
+CMD ["poetry", "run", "gunicorn", "main"]

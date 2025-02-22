@@ -68,6 +68,9 @@ def upload_file():
         output_buffer.seek(0)
         return send_file(output_buffer, as_attachment=True, download_name='problem.zip')
 
+# WSGI
+application = app
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run the Flask app.')
     parser.add_argument('-p', '--port', type=int, default=8000, help='Port to run the Flask app on.')
