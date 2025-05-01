@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "gunicorn", "main"]
+CMD ["poetry", "run", "gunicorn", "-b", "0.0.0.0:8000", "main"]
