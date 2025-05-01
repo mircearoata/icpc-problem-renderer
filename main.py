@@ -17,6 +17,8 @@ def backend_docker(input_dir_path: str, output_dir_path: str):
 def backend_local(input_dir_path: str, output_dir_path: str):
     return ['/bin/problem2html', *problem2html_args, '-d', output_dir_path, input_dir_path]
 
+backend = backend_local
+
 @app.route('/', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
