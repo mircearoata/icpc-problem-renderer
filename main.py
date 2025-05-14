@@ -1,5 +1,6 @@
 import argparse
 import io
+import re
 
 from flask import Flask, request, send_file
 import os
@@ -69,6 +70,30 @@ def upload_file():
 
         output_buffer.seek(0)
         return send_file(output_buffer, as_attachment=True, download_name='problem.zip')
+
+
+@app.route('/html2md', methods=['POST'])
+def pandoc():
+    # Read html input from request body
+    html_input = request.data.decode('utf-8')
+    app.logger.info('Received html2md request')
+
+    # Run pandoc, piping stdin and stdout
+    process = subprocess.Popen(['pandoc', '-f', 'html', '-t', 'markdown_strict+raw_tex'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate(input=html_input.encode('utf-8'))
+    if process.returncode != 0:
+        app.logger.error('Pandoc error: %s', stderr.decode('utf-8'))
+        return 'Error processing HTML', 500
+
+    app.logger.info('Converted HTML to Markdown')
+
+    markdown = stdout.decode('utf-8')
+
+    markdown = re.sub(r'\$(.+?)\$', lambda x: '$' + re.sub(r'\\(.)', r'\1', x.group(1)) + '$', markdown, flags=re.DOTALL)
+
+    # Return the markdown output
+    return send_file(io.BytesIO(markdown.encode('utf-8')), as_attachment=True, download_name='output.md')
+
 
 # WSGI
 application = app
