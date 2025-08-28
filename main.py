@@ -79,7 +79,7 @@ def pandoc():
     app.logger.info('Received html2md request')
 
     # Run pandoc, piping stdin and stdout
-    process = subprocess.Popen(['pandoc', '-f', 'html', '-t', 'markdown_strict+raw_tex'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(['pandoc', '-f', 'html', '-t', 'markdown_strict+raw_tex', '--wrap=none'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate(input=html_input.encode('utf-8'))
     if process.returncode != 0:
         app.logger.error('Pandoc error: %s', stderr.decode('utf-8'))
